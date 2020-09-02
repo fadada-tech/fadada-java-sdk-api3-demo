@@ -81,8 +81,6 @@ public class TemplateDemo extends BaseDemo {
         UpdateCompanyTemplateReq.Target target = new UpdateCompanyTemplateReq.Target();
         target.setRoleName("租户");
         target.setRoleType(1);
-        target.setBatchType(2);
-        target.setSignType(1);
         List<UpdateCompanyTemplateReq.Target> lists = new ArrayList<>();
         lists.add(target);
         templateInfo.setTargets(lists);

@@ -1,18 +1,12 @@
 package com.fadada.api;
 
-import com.fadada.api.bean.req.sign.CancelSignTaskReq;
-import com.fadada.api.bean.req.sign.GetSentUrlReq;
-import com.fadada.api.bean.req.sign.GetSignUrlReq;
-import com.fadada.api.bean.req.sign.UrgeSignReq;
+import com.fadada.api.bean.req.sign.*;
 import com.fadada.api.bean.req.sign.file.*;
 import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
 import com.fadada.api.bean.req.sign.template.TemplateSignerReq;
 import com.fadada.api.bean.rsp.BaseRsp;
 import com.fadada.api.bean.rsp.document.UploadFileRsp;
-import com.fadada.api.bean.rsp.sign.FileSignTaskRsp;
-import com.fadada.api.bean.rsp.sign.GetSentUrlRsp;
-import com.fadada.api.bean.rsp.sign.GetSignUrlRsp;
-import com.fadada.api.bean.rsp.sign.TemplateSignTaskRsp;
+import com.fadada.api.bean.rsp.sign.*;
 import com.fadada.api.client.SignTaskClient;
 import com.fadada.api.exception.ApiException;
 
@@ -73,6 +67,9 @@ public class SignDemo extends BaseDemo {
 
             // 催签
             signDemo.urgeSign();
+
+            // 获取预览链接
+            signDemo.getSignPreviewUrl();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -191,6 +188,16 @@ public class SignDemo extends BaseDemo {
         GetSentUrlReq getSentUrlReq = new GetSentUrlReq();
         getSentUrlReq.setTaskId(taskId);
         BaseRsp<GetSentUrlRsp> rsp = signTaskClient.getSentUrl(token, getSentUrlReq);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取预览链接
+     */
+    public void getSignPreviewUrl() throws ApiException {
+        GetSignPreviewUrlReq getSignPreviewUrlReq = new GetSignPreviewUrlReq();
+        getSignPreviewUrlReq.setTaskId(taskId);
+        BaseRsp<GetSignPreviewUrlRsp> rsp = signTaskClient.getSignPreviewUrl(token, getSignPreviewUrlReq);
         CommonUtil.checkResult(rsp);
     }
 
