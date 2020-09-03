@@ -71,6 +71,9 @@ public class SignDemo extends BaseDemo {
             // 获取预览链接
             signDemo.getSignPreviewUrl();
 
+            // 获取签署详请
+            signDemo.getTaskDetailByTaskId();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,6 +213,20 @@ public class SignDemo extends BaseDemo {
         UrgeSignReq urgeSignReq = new UrgeSignReq();
         urgeSignReq.setTaskId(taskId);
         BaseRsp rsp = signTaskClient.urgeSign(token, urgeSignReq);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 获取签署任务详请
+     *
+     * @throws ApiException
+     */
+    public void getTaskDetailByTaskId() throws ApiException {
+        GetTaskDetailReq getTaskDetailReq = new GetTaskDetailReq();
+        getTaskDetailReq.setTaskId(taskId);
+        getTaskDetailReq.setUnionId(unionId);
+        BaseRsp<GetTaskDetailsRes> rsp = signTaskClient.getTaskDetailByTaskId(token, getTaskDetailReq);
         CommonUtil.checkResult(rsp);
     }
 
