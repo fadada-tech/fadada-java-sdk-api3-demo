@@ -1,12 +1,17 @@
 package com.fadada.api;
 
 import com.fadada.api.bean.req.sign.*;
+import com.fadada.api.bean.req.sign.batch.*;
 import com.fadada.api.bean.req.sign.file.*;
 import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
+import com.fadada.api.bean.req.sign.template.ExternalSigner;
 import com.fadada.api.bean.req.sign.template.TemplateSignerReq;
 import com.fadada.api.bean.rsp.BaseRsp;
 import com.fadada.api.bean.rsp.document.UploadFileRsp;
 import com.fadada.api.bean.rsp.sign.*;
+import com.fadada.api.bean.rsp.sign.batch.BatchCreateByDraftIdRsp;
+import com.fadada.api.bean.rsp.sign.batch.BatchGetSignUrlRsp;
+import com.fadada.api.bean.rsp.sign.batch.BatchGetSigntasksByBatchNoRsp;
 import com.fadada.api.client.SignTaskClient;
 import com.fadada.api.exception.ApiException;
 
@@ -27,7 +32,9 @@ public class SignDemo extends BaseDemo {
     private String taskId = "任务Id";
     private String fileId = "文件ID";
     private String draftId = "模板ID";
+    private String sealId = "印章ID";
     private String mobile = "手机号码";
+    private String batchNo = "签署批次号值";
 
     private SignTaskClient signTaskClient;
 
@@ -56,23 +63,30 @@ public class SignDemo extends BaseDemo {
             signDemo.getSentUrl();
             // 第四步获取签署链接
             signDemo.getSignUrl();
-
             signDemo.mobile = "";
             signDemo.draftId = "";
             // 根据模板Id创建签署任务
             signDemo.createByTemplate();
-
             // 取消签署任务
             signDemo.cancelSignTask();
-
             // 催签
             signDemo.urgeSign();
-
             // 获取预览链接
             signDemo.getSignPreviewUrl();
-
             // 获取签署详请
             signDemo.getTaskDetailByTaskId();
+
+
+            // 创建批次号批量任务
+            signDemo.batchCreateByDraftId();
+            // 批次号批量任务新增
+            signDemo.batchAddByDraftId();
+            // 批次号批量任务 发起
+            signDemo.batchSent();
+            // 根据批次号获取签署任务
+            signDemo.batchGetSigntasksByBatchNo();
+            // 批次号获取签署链接
+            signDemo.batchGetSignUrl();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,15 +94,13 @@ public class SignDemo extends BaseDemo {
     }
 
     /**
-     * 根据文件ID闯将签署任务
+     * 根据文件ID创建签署任务
      *
      * @return
      * @throws ApiException
      */
     public FileSignTaskRsp createSignTaskByFileId()
             throws ApiException {
-        SigntaskSenderReq sender = new SigntaskSenderReq();
-
         List<SignerReq> signerReqs = new ArrayList();
         SignerReq signerReq = new SignerReq();
         signerReq.setAuthorizedUnionId(null);
@@ -227,6 +239,122 @@ public class SignDemo extends BaseDemo {
         getTaskDetailReq.setTaskId(taskId);
         getTaskDetailReq.setUnionId(unionId);
         BaseRsp<GetTaskDetailsRes> rsp = signTaskClient.getTaskDetailByTaskId(token, getTaskDetailReq);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 创建批次号批量任务
+     *
+     * @throws ApiException
+     */
+    public void batchCreateByDraftId() throws ApiException {
+        BatchCreateByDraftIdReq req = new BatchCreateByDraftIdReq();
+        BatchCreateByDraftIdReq.SenderInfo sender = new BatchCreateByDraftIdReq.SenderInfo();
+        sender.setSignIntendWay(2);
+        sender.setUnionId(unionId);
+        req.setSender(sender);
+        List<BatchDraftIdSigntaskInfoReq> lists = new ArrayList<>();
+        BatchDraftIdSigntaskInfoReq ba1 = new BatchDraftIdSigntaskInfoReq();
+        ba1.setDraftId(draftId);
+        TemplateSenderReq senderReq = new TemplateSenderReq();
+        senderReq.setSignWay(1);
+        senderReq.setSealId(sealId);
+        senderReq.setTemplateRoleName("发起方");
+        ba1.setSender(senderReq);
+        BatchTemplateSignerReq batchTemplateSignerReq = new BatchTemplateSignerReq();
+        ExternalSigner ext = new ExternalSigner();
+        ext.setMobile(mobile);
+        ext.setPersonName("小辉");
+        batchTemplateSignerReq.setExternalSigner(ext);
+        batchTemplateSignerReq.setSignOrder(200);
+        batchTemplateSignerReq.setTemplateRoleName("DBA");
+        List<BatchTemplateSignerReq> signers = new ArrayList<>();
+        signers.add(batchTemplateSignerReq);
+
+        ba1.setSigners(signers);
+        ba1.setSort(1);
+        ba1.setTaskSubject("测试合同");
+        lists.add(ba1);
+        req.setSigntasks(lists);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchCreateByDraftId(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 批次号批量任务新增
+     *
+     * @throws ApiException
+     */
+    public void batchAddByDraftId() throws ApiException {
+        BatchAddByDraftIdReq req = new BatchAddByDraftIdReq();
+        req.setBatchNo(batchNo);
+        List<BatchDraftIdSigntaskInfoReq> lists = new ArrayList<>();
+        BatchDraftIdSigntaskInfoReq ba1 = new BatchDraftIdSigntaskInfoReq();
+        ba1.setDraftId(draftId);
+        TemplateSenderReq senderReq = new TemplateSenderReq();
+        senderReq.setSignWay(1);
+        senderReq.setSealId(sealId);
+        senderReq.setTemplateRoleName("发起方");
+        senderReq.setSignOrder(52);
+        ba1.setSender(senderReq);
+        BatchTemplateSignerReq batchTemplateSignerReq = new BatchTemplateSignerReq();
+        ExternalSigner ext = new ExternalSigner();
+        ext.setMobile(mobile);
+        ext.setPersonName("小辉");
+        batchTemplateSignerReq.setExternalSigner(ext);
+        batchTemplateSignerReq.setSignOrder(200);
+        batchTemplateSignerReq.setTemplateRoleName("DBA");
+        List<BatchTemplateSignerReq> signers = new ArrayList<>();
+        signers.add(batchTemplateSignerReq);
+
+        ba1.setSigners(signers);
+        ba1.setSort(1);
+        ba1.setTaskSubject("批量合同");
+
+
+        lists.add(ba1);
+        lists.add(ba1);
+        lists.add(ba1);
+        req.setSigntasks(lists);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchAddByDraftId(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 批次号下签署任务发起
+     *
+     * @throws ApiException
+     */
+    public void batchSent() throws ApiException {
+        BatchSentReq req = new BatchSentReq();
+        req.setBatchNo(batchNo);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchSent(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 批次号获取签署链接
+     *
+     * @throws ApiException
+     */
+    public void batchGetSignUrl() throws ApiException {
+        BatchGetSignUrlReq req = new BatchGetSignUrlReq();
+        req.setBatchNo(batchNo);
+        BaseRsp<BatchGetSignUrlRsp> rsp = signTaskClient.batchGetSignUrl(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 根据批次号获取签署任务
+     *
+     * @throws ApiException
+     */
+    public void batchGetSigntasksByBatchNo() throws ApiException {
+        BatchGetSigntasksByBatchNoReq req = new BatchGetSigntasksByBatchNoReq();
+        req.setBatchNo(batchNo);
+        BaseRsp<BatchGetSigntasksByBatchNoRsp> rsp = signTaskClient.batchGetSigntasksByBatchNo(token, req);
         CommonUtil.checkResult(rsp);
     }
 

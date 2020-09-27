@@ -1,18 +1,18 @@
 package com.fadada.api;
 
+import com.fadada.api.bean.req.document.TemplateFileReq;
 import com.fadada.api.bean.req.template.*;
 import com.fadada.api.bean.rsp.BaseRsp;
 import com.fadada.api.bean.rsp.document.DownLoadFileRsp;
-import com.fadada.api.bean.rsp.template.GetEditCompanyTemplateUrlRsp;
-import com.fadada.api.bean.rsp.template.QueryCompanyTemplateListRsp;
-import com.fadada.api.bean.rsp.template.UpdateCompanyTemplateRsp;
-import com.fadada.api.bean.rsp.template.UploadCompanyTemplateFileRsp;
+import com.fadada.api.bean.rsp.template.*;
 import com.fadada.api.client.TemplateClient;
 import com.fadada.api.exception.ApiException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yh
@@ -21,8 +21,8 @@ import java.util.List;
  * @createTime 2020年7月31日 14:37:20
  */
 public class TemplateDemo extends BaseDemo {
-    private String templateId = "模板ID";
-    private String fileId = "文件ID";
+    private String templateId = null;
+    private String fileId = "模板文件ID";
 
     private TemplateClient templateClient;
 
@@ -40,15 +40,19 @@ public class TemplateDemo extends BaseDemo {
             // 上传企业模板文件附件
             templateDemo.uploadCompanyTemplateFile();
             // 修改企业模板信息
-            templateDemo.updateCompanyTemplate();
+//            templateDemo.updateCompanyTemplate();
             // 获取企业模板控件维护页面url
-            templateDemo.getEditCompanyTemplateUrl();
+//            templateDemo.getEditCompanyTemplateUrl();
             // 删除企业模板文件附件
-            templateDemo.delCompanyTemplateFile();
+//            templateDemo.delCompanyTemplateFile();
             // 获取企业模板列表
-            templateDemo.queryCompanyTemplateList();
+//            templateDemo.queryCompanyTemplateList();
             // 下载企业模板文件
-            templateDemo.downloadCompanyTemplateFile();
+//            templateDemo.downloadCompanyTemplateFile();
+            // 获取模板详请
+//            templateDemo.getTemplateDetailById();
+            // 模板填充
+//            templateDemo.createByTemplate();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +62,7 @@ public class TemplateDemo extends BaseDemo {
     /**
      * 上传企业模板文件附件
      */
-    private void uploadCompanyTemplateFile() throws ApiException {
+    public void uploadCompanyTemplateFile() throws ApiException {
         UploadCompanyTemplateFileReq req = new UploadCompanyTemplateFileReq();
         req.setFileType(1, templateId);
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
@@ -71,7 +75,7 @@ public class TemplateDemo extends BaseDemo {
     /**
      * 修改企业模板信息
      */
-    private void updateCompanyTemplate() throws ApiException {
+    public void updateCompanyTemplate() throws ApiException {
         UpdateCompanyTemplateReq req = new UpdateCompanyTemplateReq();
         UpdateCompanyTemplateReq.TemplateInfo templateInfo = new UpdateCompanyTemplateReq.TemplateInfo();
         templateInfo.setTemplateName("房屋租赁合同");
@@ -92,7 +96,7 @@ public class TemplateDemo extends BaseDemo {
     /**
      * 获取企业模板控件维护页面url
      */
-    private void getEditCompanyTemplateUrl() throws ApiException {
+    public void getEditCompanyTemplateUrl() throws ApiException {
         GetEditCompanyTemplateUrlReq req = new GetEditCompanyTemplateUrlReq();
         req.setTemplateId(templateId);
         BaseRsp<GetEditCompanyTemplateUrlRsp> rsp = templateClient.getEditCompanyTemplateUrl(token, req);
@@ -102,7 +106,7 @@ public class TemplateDemo extends BaseDemo {
     /**
      * 删除企业模板文件附件
      */
-    private void delCompanyTemplateFile() throws ApiException {
+    public void delCompanyTemplateFile() throws ApiException {
         DelCompanyTemplateFileReq req = new DelCompanyTemplateFileReq();
         req.setTemplateIdAndFileId(templateId, fileId);
         BaseRsp rsp = templateClient.delCompanyTemplateFile(token, req);
@@ -112,7 +116,7 @@ public class TemplateDemo extends BaseDemo {
     /**
      * 企业模板列表查询
      */
-    private void queryCompanyTemplateList() throws ApiException {
+    public void queryCompanyTemplateList() throws ApiException {
         QueryCompanyTemplateListReq req = new QueryCompanyTemplateListReq();
         QueryCompanyTemplateListReq.QueryInfo queryInfo = new QueryCompanyTemplateListReq.QueryInfo();
         queryInfo.setCurrentPageNo(1);
@@ -122,10 +126,11 @@ public class TemplateDemo extends BaseDemo {
         CommonUtil.checkResult(rsp);
     }
 
+
     /**
      * 模板文件下载
      */
-    private void downloadCompanyTemplateFile() throws ApiException {
+    public void downloadCompanyTemplateFile() throws ApiException {
         DownloadCompanyTemplateFileReq req = new DownloadCompanyTemplateFileReq();
         DownloadCompanyTemplateFileReq.TemplateInfo templateInfo = new DownloadCompanyTemplateFileReq.TemplateInfo();
         templateInfo.setTemplateId(templateId);
@@ -139,5 +144,51 @@ public class TemplateDemo extends BaseDemo {
         }
     }
 
+    /**
+     * 获取模板详请
+     *
+     * @throws ApiException
+     */
+    public void getTemplateDetailById() throws ApiException {
+        GetTemplateDetailByIdReq req = new GetTemplateDetailByIdReq();
+        req.setTemplateId(templateId);
+        BaseRsp<GetTemplateDetailByIdRsp> rsp = templateClient.getTemplateDetailById(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 模板填充接口
+     *
+     * @throws ApiException
+     */
+    public void createByTemplate() throws ApiException {
+        CreateByTemplateReq req = new CreateByTemplateReq();
+        req.setTemplateId(templateId);
+        List<TemplateFileReq> templateFiles = new ArrayList<>();
+
+        TemplateFileReq t1 = new TemplateFileReq();
+        Map<String, String> f1 = new HashMap<>();
+        f1.put("姓名", "张三");
+        f1.put("性别", "女");
+
+        t1.setTemplateFileId(fileId);
+        t1.setDocumentFileName("第1份文档");
+        t1.setFormFields(f1);
+        templateFiles.add(t1);
+
+        TemplateFileReq t2 = new TemplateFileReq();
+        Map<String, String> f2 = new HashMap<>();
+        f2.put("姓名", "张三");
+        f2.put("性别", "男");
+        t2.setTemplateFileId(fileId);
+        t2.setDocumentFileName("第2份文档");
+        t2.setFormFields(f2);
+
+        templateFiles.add(t2);
+        req.setTemplateFiles(templateFiles);
+        BaseRsp<DraftRsp> rsp = templateClient.createByTemplate(token, req);
+        CommonUtil.checkResult(rsp);
+    }
 
 }

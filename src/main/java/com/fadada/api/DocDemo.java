@@ -2,7 +2,10 @@ package com.fadada.api;
 
 import com.fadada.api.bean.req.document.*;
 import com.fadada.api.bean.rsp.BaseRsp;
-import com.fadada.api.bean.rsp.document.*;
+import com.fadada.api.bean.rsp.document.DownLoadFileRsp;
+import com.fadada.api.bean.rsp.document.LookUpCoordinatesRsp;
+import com.fadada.api.bean.rsp.document.UploadFileRsp;
+import com.fadada.api.bean.rsp.document.VerifySignatureRsp;
 import com.fadada.api.client.DocumentClient;
 import com.fadada.api.exception.ApiException;
 
@@ -19,7 +22,6 @@ import java.io.File;
  */
 public class DocDemo extends BaseDemo {
 
-    private String tempId = "模板Id";
     private String taskId = "签署任务Id";
     private String draftId = "模板Id";
     private String fileId = "文件Id";
@@ -43,31 +45,20 @@ public class DocDemo extends BaseDemo {
             docDemo.getBySignFileId();
             // 下载合同草稿文件
             docDemo.getByDraftFileId();
-            // 获取模板详请
-            docDemo.getTemplateDetail();
             // 关键字查询坐标
             docDemo.lookUpCoordinates();
             // 合同文件验签
             docDemo.verifySignature();
             // 合同技术报告下载
             docDemo.contractReportDownload();
+            // 公证处保全报告下载
+            docDemo.downloadEvidenceReport();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * 获取模板详请
-     *
-     * @throws ApiException
-     */
-    public void getTemplateDetail() throws ApiException {
-        GetTemplateDetailByIdReq req = new GetTemplateDetailByIdReq();
-        req.setTemplateId(tempId);
-        BaseRsp<GetTemplateDetailByIdRsp> rsp = documentClient.getTemplateDetailById(token, req);
-        CommonUtil.checkResult(rsp);
-    }
 
     /**
      * 上传文件
@@ -165,6 +156,26 @@ public class DocDemo extends BaseDemo {
             CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "技术报告.zip");
         } else {
             log.error("技术报告下载失败：{}", rsp.toString());
+        }
+    }
+
+    /**
+     * 保全报告下载
+     *
+     * @throws ApiException
+     */
+    public void downloadEvidenceReport() throws ApiException {
+        DownloadEvidenceReportReq req = new DownloadEvidenceReportReq();
+        DownloadEvidenceReportReq.QueryInfo queryInfo = new DownloadEvidenceReportReq.QueryInfo();
+        queryInfo.setTaskId(taskId);
+        queryInfo.setType(3);
+        req.setQueryInfo(queryInfo);
+        BaseRsp<DownLoadFileRsp> rsp = documentClient.downloadEvidenceReport(token, req);
+        if (rsp.isSuccess()) {
+            String path = getClass().getClassLoader().getResource("").getPath();
+            CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "公证处保全报告.zip");
+        } else {
+            log.error("公证处保全报告下载失败：{}", rsp.toString());
         }
     }
 

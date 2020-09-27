@@ -20,7 +20,7 @@ import java.io.File;
  */
 public class SealDemo extends BaseDemo {
 
-    private Long sealId;
+    private String sealId;
 
     public SealDemo(FadadaApiClient fadadaApiClient) {
         this.sealClient = new SealClient(fadadaApiClient);

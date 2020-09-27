@@ -55,6 +55,8 @@ public class AccountDemo extends BaseDemo {
             accountDemo.getCompanyUnionIdUrl();
             // 账号信息校验
             accountDemo.checkAccountInfo();
+            // 获取接入方信息
+            accountDemo.getAccessObjectInfo();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,6 +145,16 @@ public class AccountDemo extends BaseDemo {
         CheckAccountInfoReq req = new CheckAccountInfoReq();
         req.setMobile("手机号码");
         BaseRsp<CheckAccountInfoRsp> rsp = accountClient.checkAccountInfo(token, req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取接入方信息
+     *
+     * @throws ApiException
+     */
+    public void getAccessObjectInfo() throws ApiException {
+        BaseRsp<GetAccessObjectInfoRsp> rsp = accountClient.getAccessObjectInfo(token);
         CommonUtil.checkResult(rsp);
     }
 

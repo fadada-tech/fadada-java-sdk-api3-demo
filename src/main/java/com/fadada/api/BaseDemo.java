@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseDemo {
     public static Logger log = LoggerFactory.getLogger(BaseDemo.class);
-    public static String APPID = "企业appId值";
-    public static String APPKEY = "企业appKey值";
-    public static String SERVERURL = "请求服务Url";
+    public static String APPID = "FA12570596";
+    public static String APPKEY = "HEECPISOQXV100EMGWV4UOB6JQOH77PK";
+    public static String SERVERURL = "https://v4demo-gw.fadada.com/api/v3/";
 
-    public final String unionId = "用户unionId";
+    public static String unionId = "用户unionId";
 
-    public String token = "accessToken值";
+    public static String token = "accessToken值";
 
 
     /**
