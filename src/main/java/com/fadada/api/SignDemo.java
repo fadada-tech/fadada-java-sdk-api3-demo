@@ -1,6 +1,7 @@
 package com.fadada.api;
 
 import com.fadada.api.bean.req.sign.*;
+import com.fadada.api.bean.req.sign.NoticeReq;
 import com.fadada.api.bean.req.sign.batch.*;
 import com.fadada.api.bean.req.sign.file.*;
 import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
