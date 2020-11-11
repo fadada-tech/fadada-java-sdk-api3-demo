@@ -21,8 +21,8 @@ import java.util.Map;
  * @createTime 2020年7月31日 14:37:20
  */
 public class TemplateDemo extends BaseDemo {
-    private String templateId = null;
-    private String fileId = "模板文件ID";
+    private String templateId = "模板ID";
+    private String fileId = "文件ID";
 
     private TemplateClient templateClient;
 
@@ -40,19 +40,19 @@ public class TemplateDemo extends BaseDemo {
             // 上传企业模板文件附件
             templateDemo.uploadCompanyTemplateFile();
             // 修改企业模板信息
-//            templateDemo.updateCompanyTemplate();
+            templateDemo.updateCompanyTemplate();
             // 获取企业模板控件维护页面url
-//            templateDemo.getEditCompanyTemplateUrl();
+            templateDemo.getEditCompanyTemplateUrl();
             // 删除企业模板文件附件
-//            templateDemo.delCompanyTemplateFile();
+            templateDemo.delCompanyTemplateFile();
             // 获取企业模板列表
-//            templateDemo.queryCompanyTemplateList();
+            templateDemo.queryCompanyTemplateList();
             // 下载企业模板文件
-//            templateDemo.downloadCompanyTemplateFile();
+            templateDemo.downloadCompanyTemplateFile();
             // 获取模板详请
-//            templateDemo.getTemplateDetailById();
+            templateDemo.getTemplateDetailById();
             // 模板填充
-//            templateDemo.createByTemplate();
+            templateDemo.createByTemplate();
 
         } catch (Exception e) {
             e.printStackTrace();
