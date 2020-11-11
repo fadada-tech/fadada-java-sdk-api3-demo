@@ -59,10 +59,11 @@ public class SealDemo extends BaseDemo {
      */
     public void addCompanySeal() throws ApiException {
         AddCompanySealReq addCompanySealReq = new AddCompanySealReq();
+        addCompanySealReq.setToken(token);
         addCompanySealReq.setSealInfo(null, "人事章");
         String path = getClass().getClassLoader().getResource("sampleSeal.png").getFile();
         File imageFile = new File(path);
-        BaseRsp<AddCompanySealRsp> rsp = sealClient.addCompanySeal(token, addCompanySealReq, imageFile);
+        BaseRsp<AddCompanySealRsp> rsp = sealClient.addCompanySeal(addCompanySealReq, imageFile);
         CommonUtil.checkResult(rsp);
     }
 
@@ -71,8 +72,9 @@ public class SealDemo extends BaseDemo {
      */
     public void delCompanySeal() throws ApiException {
         DelCompanySealReq delCompanySealReq = new DelCompanySealReq();
+        delCompanySealReq.setToken(token);
         delCompanySealReq.setSealInfo(sealId);
-        BaseRsp rsp = sealClient.delCompanySeal(token, delCompanySealReq);
+        BaseRsp rsp = sealClient.delCompanySeal(delCompanySealReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -81,9 +83,14 @@ public class SealDemo extends BaseDemo {
      */
     public void sealAuth() throws ApiException {
         SealAuthReq sealAuthReq = new SealAuthReq();
-        sealAuthReq.setEmployeeInfo(unionId);
-        sealAuthReq.setSealInfo(sealId);
-        BaseRsp rsp = sealClient.sealAuth(token, sealAuthReq);
+        sealAuthReq.setToken(token);
+        SealAuthReq.EmployeeInfo employeeInfo = new SealAuthReq.EmployeeInfo();
+        employeeInfo.setUnionId(unionId);
+        sealAuthReq.setEmployeeInfo(employeeInfo);
+        SealAuthReq.SealInfo sealInfo = new SealAuthReq.SealInfo();
+        sealInfo.setSealId(sealId);
+        sealAuthReq.setSealInfo(sealInfo);
+        BaseRsp rsp = sealClient.sealAuth(sealAuthReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -92,9 +99,10 @@ public class SealDemo extends BaseDemo {
      */
     public void cancelSealAuth() throws ApiException {
         CancelSealAuthReq cancelSealAuthReq = new CancelSealAuthReq();
+        cancelSealAuthReq.setToken(token);
         cancelSealAuthReq.setEmployeeInfo(unionId);
         cancelSealAuthReq.setSealInfo(sealId);
-        BaseRsp rsp = sealClient.cancelSealAuth(token, cancelSealAuthReq);
+        BaseRsp rsp = sealClient.cancelSealAuth(cancelSealAuthReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -103,8 +111,9 @@ public class SealDemo extends BaseDemo {
      */
     public void companySealList() throws ApiException {
         CompanySealListReq companySealListReq = new CompanySealListReq();
+        companySealListReq.setToken(token);
         companySealListReq.setSealInfo(1);
-        BaseRsp<CompanySealListRsp> rsp = sealClient.companySealList(token, companySealListReq);
+        BaseRsp<CompanySealListRsp> rsp = sealClient.companySealList(companySealListReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -113,8 +122,11 @@ public class SealDemo extends BaseDemo {
      */
     public void companySealDetail() throws ApiException {
         CompanySealDetailReq companySealDetailReq = new CompanySealDetailReq();
-        companySealDetailReq.setSealInfo(sealId);
-        BaseRsp<CompanySealDetailRsp> rsp = sealClient.companySealDetail(token, companySealDetailReq);
+        companySealDetailReq.setToken(token);
+        CompanySealDetailReq.SealInfo sealInfo = new CompanySealDetailReq.SealInfo();
+        sealInfo.setSealId(sealId);
+        companySealDetailReq.setSealInfo(sealInfo);
+        BaseRsp<CompanySealDetailRsp> rsp = sealClient.companySealDetail(companySealDetailReq);
         CommonUtil.checkResult(rsp);
     }
 }

@@ -65,11 +65,12 @@ public class DocDemo extends BaseDemo {
      */
     public UploadFileRsp uploadFile() throws ApiException {
         UploadFileReq uploadFileReq = new UploadFileReq();
+        uploadFileReq.setToken(token);
         uploadFileReq.setFileType(1);
 
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
         File file = new File(path);
-        BaseRsp<UploadFileRsp> rsp = documentClient.uploadFile(token, uploadFileReq, file);
+        BaseRsp<UploadFileRsp> rsp = documentClient.uploadFile(uploadFileReq, file);
         CommonUtil.checkResult(rsp);
         return rsp.getData();
     }
@@ -80,9 +81,10 @@ public class DocDemo extends BaseDemo {
      */
     public void getBySignFileId() throws ApiException {
         GetBySignFileIdReq req = new GetBySignFileIdReq();
+        req.setToken(token);
         req.setTaskId(taskId);
         req.setSignFileId(fileId);
-        BaseRsp<DownLoadFileRsp> rsp = documentClient.getBySignFileId(token, req);
+        BaseRsp<DownLoadFileRsp> rsp = documentClient.getBySignFileId(req);
         if (rsp.isSuccess()) {
             String path = getClass().getClassLoader().getResource("").getPath();
             CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "合同.zip");
@@ -98,9 +100,10 @@ public class DocDemo extends BaseDemo {
      */
     public void getByDraftFileId() throws ApiException {
         GetByDraftIdReq req = new GetByDraftIdReq();
+        req.setToken(token);
         req.setDraftFileId("");
         req.setDraftId(draftId);
-        BaseRsp<DownLoadFileRsp> rsp = documentClient.getByDraftId(token, req);
+        BaseRsp<DownLoadFileRsp> rsp = documentClient.getByDraftId(req);
         if (rsp.isSuccess()) {
             String path = getClass().getClassLoader().getResource("").getPath();
             CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "文件.zip");
@@ -117,13 +120,14 @@ public class DocDemo extends BaseDemo {
      */
     public void lookUpCoordinates() throws ApiException {
         LookUpCoordinatesReq req = new LookUpCoordinatesReq();
+        req.setToken(token);
         LookUpCoordinatesReq.QueryInfo queryInfo = new LookUpCoordinatesReq.QueryInfo();
         queryInfo.setFileId(fileId);
         queryInfo.setKeyword("房屋");
         queryInfo.setPageNumber(0);
         queryInfo.setKeywordStrategy(0);
         req.setQueryInfo(queryInfo);
-        BaseRsp<LookUpCoordinatesRsp> rsp = documentClient.lookUpCoordinates(token, req);
+        BaseRsp<LookUpCoordinatesRsp> rsp = documentClient.lookUpCoordinates(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -134,9 +138,10 @@ public class DocDemo extends BaseDemo {
      */
     public void verifySignature() throws ApiException {
         VerifySignatureReq req = new VerifySignatureReq();
+        req.setToken(token);
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
         File file = new File(path);
-        BaseRsp<VerifySignatureRsp> rsp = documentClient.verifySignature(token, req, file);
+        BaseRsp<VerifySignatureRsp> rsp = documentClient.verifySignature(req, file);
         CommonUtil.checkResult(rsp);
     }
 
@@ -147,10 +152,11 @@ public class DocDemo extends BaseDemo {
      */
     public void contractReportDownload() throws ApiException {
         ContractReportDownloadReq req = new ContractReportDownloadReq();
+        req.setToken(token);
         ContractReportDownloadReq.ContractInfo contractInfo = new ContractReportDownloadReq.ContractInfo();
         contractInfo.setTaskId(taskId);
         req.setContractInfo(contractInfo);
-        BaseRsp<DownLoadFileRsp> rsp = documentClient.contractReportDownload(token, req);
+        BaseRsp<DownLoadFileRsp> rsp = documentClient.contractReportDownload(req);
         if (rsp.isSuccess()) {
             String path = getClass().getClassLoader().getResource("").getPath();
             CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "技术报告.zip");
@@ -166,11 +172,12 @@ public class DocDemo extends BaseDemo {
      */
     public void downloadEvidenceReport() throws ApiException {
         DownloadEvidenceReportReq req = new DownloadEvidenceReportReq();
+        req.setToken(token);
         DownloadEvidenceReportReq.QueryInfo queryInfo = new DownloadEvidenceReportReq.QueryInfo();
         queryInfo.setTaskId(taskId);
         queryInfo.setType(3);
         req.setQueryInfo(queryInfo);
-        BaseRsp<DownLoadFileRsp> rsp = documentClient.downloadEvidenceReport(token, req);
+        BaseRsp<DownLoadFileRsp> rsp = documentClient.downloadEvidenceReport(req);
         if (rsp.isSuccess()) {
             String path = getClass().getClassLoader().getResource("").getPath();
             CommonUtil.fileSink(rsp.getData().getFileBytes(), path, "公证处保全报告.zip");

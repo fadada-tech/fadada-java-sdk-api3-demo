@@ -1,5 +1,6 @@
 package com.fadada.api;
 
+import com.fadada.api.bean.req.BaseReq;
 import com.fadada.api.bean.req.account.*;
 import com.fadada.api.bean.rsp.BaseRsp;
 import com.fadada.api.bean.rsp.account.*;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 public class AccountDemo extends BaseDemo {
 
     private String returnUrl = "https://fadada.com";
+    private String thirdUserId = "第三方用户Id";
 
     private AccountClient accountClient;
 
@@ -43,8 +45,6 @@ public class AccountDemo extends BaseDemo {
             AccountDemo accountDemo = new AccountDemo(client);
             baseDemo.getToken(client);
 
-            // 获取授权地址
-            accountDemo.getAuthurl();
             // 获取个人信息确定地址
             accountDemo.getPersonUnionIdUrl();
             // 获取个人信息
@@ -58,24 +58,19 @@ public class AccountDemo extends BaseDemo {
             // 获取接入方信息
             accountDemo.getAccessObjectInfo();
 
+            //  ----- 第三方服务 -------
+            // 获取开通第三方服务地址
+            accountDemo.getOpenServerUrl();
+            // 获取userToken
+            accountDemo.getUserToken();
+            // 取消第三方服务地址
+            accountDemo.cancelServer();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * 获取授权地址
-     *
-     * @throws ApiException
-     */
-    public void getAuthurl() throws ApiException {
-        GetAuthorizeUrlReq req = new GetAuthorizeUrlReq();
-        req.setUnionId(unionId);
-        req.setRedirectUrl(returnUrl);
-        req.setScope("1");
-        BaseRsp<GetAuthorizeUrlRsp> rsp = accountClient.getAuthorizeUrl(token, req);
-        CommonUtil.checkResult(rsp);
-    }
 
     /**
      * 获取个人信息确定地址
@@ -84,9 +79,10 @@ public class AccountDemo extends BaseDemo {
      */
     public void getPersonUnionIdUrl() throws ApiException {
         GetPersonUnionIdUrlReq req = new GetPersonUnionIdUrlReq();
+        req.setToken(token);
         req.setClientId(clientId);
         req.setRedirectUrl(returnUrl);
-        BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getPersonUnionIdUrl(token, req);
+        BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getPersonUnionIdUrl(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -97,8 +93,9 @@ public class AccountDemo extends BaseDemo {
      */
     public void getPersonInfo() throws ApiException {
         GetPersonInfoReq req = new GetPersonInfoReq();
+        req.setToken(token);
         req.setUnionId(unionId);
-        BaseRsp<GetPersonInfoRsp> rsp = accountClient.getPersonInfo(token, req);
+        BaseRsp<GetPersonInfoRsp> rsp = accountClient.getPersonInfo(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -110,7 +107,7 @@ public class AccountDemo extends BaseDemo {
      */
     public void getCompanyUnionIdUrl() throws ApiException {
         GetCompanyUnionIdUrlReq req = new GetCompanyUnionIdUrlReq();
-
+        req.setToken(token);
         req.setClientId(clientId);
         req.setRedirectUrl(returnUrl);
         req.setAllowModify(1);
@@ -120,7 +117,7 @@ public class AccountDemo extends BaseDemo {
         applicantR.setUnionId(unionId);
         req.setCompany(companyReq);
         req.setApplicant(applicantR);
-        BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getCompanyUnionIdUrl(token, req);
+        BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getCompanyUnionIdUrl(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -131,8 +128,9 @@ public class AccountDemo extends BaseDemo {
      */
     public void getCompanyInfo() throws ApiException {
         GetCompanyInfoReq req = new GetCompanyInfoReq();
+        req.setToken(token);
         req.setUnionId(unionId);
-        BaseRsp<GetCompanyInfoRsp> rsp = accountClient.getCompanyInfo(token, req);
+        BaseRsp<GetCompanyInfoRsp> rsp = accountClient.getCompanyInfo(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -143,8 +141,9 @@ public class AccountDemo extends BaseDemo {
      */
     public void checkAccountInfo() throws ApiException {
         CheckAccountInfoReq req = new CheckAccountInfoReq();
+        req.setToken(token);
         req.setMobile("手机号码");
-        BaseRsp<CheckAccountInfoRsp> rsp = accountClient.checkAccountInfo(token, req);
+        BaseRsp<CheckAccountInfoRsp> rsp = accountClient.checkAccountInfo(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -154,7 +153,52 @@ public class AccountDemo extends BaseDemo {
      * @throws ApiException
      */
     public void getAccessObjectInfo() throws ApiException {
-        BaseRsp<GetAccessObjectInfoRsp> rsp = accountClient.getAccessObjectInfo(token);
+        BaseReq baseReq = new BaseReq();
+        baseReq.setToken(token);
+        BaseRsp<GetAccessObjectInfoRsp> rsp = accountClient.getAccessObjectInfo(baseReq);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取开通第三方服务地址
+     *
+     * @throws ApiException
+     */
+    public void getOpenServerUrl() throws ApiException {
+        GetOpenServerUrlReq req = new GetOpenServerUrlReq();
+        req.setToken(token);
+        req.setRedirectUrl(returnUrl);
+        req.setThirdUserId(thirdUserId);
+        req.setUnionId(unionId);
+        BaseRsp<GetOpenServerUrlRsp> rsp = accountClient.getOpenServerUrl(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取userToken
+     *
+     * @throws ApiException
+     */
+    public void getUserToken() throws ApiException {
+
+        GetUserTokenReq req = new GetUserTokenReq();
+        req.setToken(token);
+        req.setGrantCode("授权码");
+        BaseRsp<GetUserTokenRsp> rsp = accountClient.getUserToken(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 取消第三方服务地址
+     *
+     * @throws ApiException
+     */
+    public void cancelServer() throws ApiException {
+        CancelServerReq req = new CancelServerReq();
+        req.setToken(token);
+        req.setThirdUserId(thirdUserId);
+        req.setUnionId(unionId);
+        BaseRsp<CheckAccountInfoRsp> rsp = accountClient.cancelServer(req);
         CommonUtil.checkResult(rsp);
     }
 

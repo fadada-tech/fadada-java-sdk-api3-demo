@@ -1,7 +1,7 @@
 package com.fadada.api;
 
 import com.fadada.api.bean.rsp.BaseRsp;
-import com.fadada.api.bean.rsp.account.AccessTokenRsp;
+import com.fadada.api.bean.rsp.oauth2.AccessTokenRsp;
 import com.fadada.api.client.Oauth2Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +16,14 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseDemo {
     public static Logger log = LoggerFactory.getLogger(BaseDemo.class);
-    public static String APPID = "企业appId值";
-    public static String APPKEY = "企业appKey值";
-    public static String SERVERURL = "请求服务Url";
+    public static String APPID = "FA12570596";
+    public static String APPKEY = "HEECPISOQXV100EMGWV4UOB6JQOH77PK";
+    public static String SERVERURL = "https://v4demo-gw.fadada.com/api/v3/";
 
     public static String unionId = "用户unionId";
 
     public static String token = "accessToken值";
+    public static String userToken = "userToken值";
 
 
     /**

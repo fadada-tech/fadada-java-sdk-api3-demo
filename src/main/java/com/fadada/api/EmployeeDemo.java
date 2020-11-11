@@ -46,7 +46,8 @@ public class EmployeeDemo extends BaseDemo {
     public void addEmployee() throws ApiException {
         AddEmployeeReq addEmployeeReq = new AddEmployeeReq();
         addEmployeeReq.setEmployeeInfo(unionId);
-        BaseRsp rsp = employeeClient.addEmployee(token, addEmployeeReq);
+        addEmployeeReq.setToken(token);
+        BaseRsp rsp = employeeClient.addEmployee(addEmployeeReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -56,8 +57,9 @@ public class EmployeeDemo extends BaseDemo {
      */
     public void delEmployee() throws ApiException {
         DelEmployeeReq delEmployeeReq = new DelEmployeeReq();
+        delEmployeeReq.setToken(token);
         delEmployeeReq.setEmployeeInfo(unionId);
-        BaseRsp rsp = employeeClient.delEmployee(token, delEmployeeReq);
+        BaseRsp rsp = employeeClient.delEmployee(delEmployeeReq);
         CommonUtil.checkResult(rsp);
     }
 }

@@ -75,6 +75,8 @@ public class SignDemo extends BaseDemo {
             signDemo.getSignPreviewUrl();
             // 获取签署详请
             signDemo.getTaskDetailByTaskId();
+            //依据原始文件创建签署任务
+            signDemo.createTaskByFile();
 
 
             // 创建批次号批量任务
@@ -137,7 +139,8 @@ public class SignDemo extends BaseDemo {
 
         signTaskReq.setSigners(signerReqs);
         signTaskReq.setFiles(fileReqs);
-        BaseRsp<FileSignTaskRsp> rsp = signTaskClient.createSignTaskByFileId(token, signTaskReq);
+        signTaskReq.setToken(token);
+        BaseRsp<FileSignTaskRsp> rsp = signTaskClient.createSignTaskByFileId(signTaskReq);
         CommonUtil.checkResult(rsp);
 
         return rsp.getData();
@@ -154,7 +157,8 @@ public class SignDemo extends BaseDemo {
         req.setUnionId(unionId);
         req.setRedirectUrl("http://www.fadada.com");
         req.setTaskId(taskId);
-        BaseRsp<GetSignUrlRsp> rsp = signTaskClient.getSignUrl(token, req);
+        req.setToken(token);
+        BaseRsp<GetSignUrlRsp> rsp = signTaskClient.getSignUrl(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -164,6 +168,7 @@ public class SignDemo extends BaseDemo {
      */
     public TemplateSignTaskRsp createByTemplate() throws ApiException {
         CreateByDraftIdReq templateSignTaskReq = new CreateByDraftIdReq();
+        templateSignTaskReq.setToken(token);
         templateSignTaskReq.setTaskSubject("房屋租赁合同");
         templateSignTaskReq.setSort(1);
         templateSignTaskReq.setStatus("sent");
@@ -180,7 +185,7 @@ public class SignDemo extends BaseDemo {
         signers.add(signerReq1);
         templateSignTaskReq.setSigners(signers);
 
-        BaseRsp<TemplateSignTaskRsp> rsp = signTaskClient.createSignTaskByDraftId(token, templateSignTaskReq);
+        BaseRsp<TemplateSignTaskRsp> rsp = signTaskClient.createSignTaskByDraftId(templateSignTaskReq);
         CommonUtil.checkResult(rsp);
         return rsp.getData();
     }
@@ -190,9 +195,10 @@ public class SignDemo extends BaseDemo {
      */
     public void cancelSignTask() throws ApiException {
         CancelSignTaskReq cancelSignTaskReq = new CancelSignTaskReq();
+        cancelSignTaskReq.setToken(token);
         cancelSignTaskReq.setRemark("由于乙方某某原因，撤销该任务");
         cancelSignTaskReq.setTaskId(taskId);
-        BaseRsp rsp = signTaskClient.cancelSignTask(token, cancelSignTaskReq);
+        BaseRsp rsp = signTaskClient.cancelSignTask(cancelSignTaskReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -201,8 +207,9 @@ public class SignDemo extends BaseDemo {
      */
     public void getSentUrl() throws ApiException {
         GetSentUrlReq getSentUrlReq = new GetSentUrlReq();
+        getSentUrlReq.setToken(token);
         getSentUrlReq.setTaskId(taskId);
-        BaseRsp<GetSentUrlRsp> rsp = signTaskClient.getSentUrl(token, getSentUrlReq);
+        BaseRsp<GetSentUrlRsp> rsp = signTaskClient.getSentUrl(getSentUrlReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -211,8 +218,9 @@ public class SignDemo extends BaseDemo {
      */
     public void getSignPreviewUrl() throws ApiException {
         GetSignPreviewUrlReq getSignPreviewUrlReq = new GetSignPreviewUrlReq();
+        getSignPreviewUrlReq.setToken(token);
         getSignPreviewUrlReq.setTaskId(taskId);
-        BaseRsp<GetSignPreviewUrlRsp> rsp = signTaskClient.getSignPreviewUrl(token, getSignPreviewUrlReq);
+        BaseRsp<GetSignPreviewUrlRsp> rsp = signTaskClient.getSignPreviewUrl(getSignPreviewUrlReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -223,8 +231,9 @@ public class SignDemo extends BaseDemo {
      */
     public void urgeSign() throws ApiException {
         UrgeSignReq urgeSignReq = new UrgeSignReq();
+        urgeSignReq.setToken(token);
         urgeSignReq.setTaskId(taskId);
-        BaseRsp rsp = signTaskClient.urgeSign(token, urgeSignReq);
+        BaseRsp rsp = signTaskClient.urgeSign(urgeSignReq);
         CommonUtil.checkResult(rsp);
     }
 
@@ -236,9 +245,62 @@ public class SignDemo extends BaseDemo {
      */
     public void getTaskDetailByTaskId() throws ApiException {
         GetTaskDetailReq getTaskDetailReq = new GetTaskDetailReq();
+        getTaskDetailReq.setToken(token);
         getTaskDetailReq.setTaskId(taskId);
         getTaskDetailReq.setUnionId(unionId);
-        BaseRsp<GetTaskDetailsRes> rsp = signTaskClient.getTaskDetailByTaskId(token, getTaskDetailReq);
+        BaseRsp<GetTaskDetailsRes> rsp = signTaskClient.getTaskDetailByTaskId(getTaskDetailReq);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 依据原始文件创建签署任务
+     *
+     * @throws ApiException
+     */
+    public void createTaskByFile() throws ApiException {
+        CreateTaskByFileReq req = new CreateTaskByFileReq();
+        req.setToken(token);
+        req.setTaskSubject("房屋租赁");
+        req.setSort(1);
+        req.setStatus("sent");
+
+
+        CreateTaskByFileReq.TaskSenderInfo sender = new CreateTaskByFileReq.TaskSenderInfo();
+        sender.setUnionId(unionId);
+        req.setSender(sender);
+
+        CreateTaskByFileReq.SignerInfo signerInfo = new CreateTaskByFileReq.SignerInfo();
+        CreateTaskByFileReq.ExternalSignerReq externalSignerReq = new CreateTaskByFileReq.ExternalSignerReq();
+        externalSignerReq.setMobile(mobile);
+        externalSignerReq.setPersonName("用户名称");
+        signerInfo.setExternalSigner(externalSignerReq);
+
+        List<CreateTaskByFileReq.SignRegionInfo> signRegions = new ArrayList<>();
+        CreateTaskByFileReq.SignRegionInfo signRegionInfo = new CreateTaskByFileReq.SignRegionInfo();
+        signRegionInfo.setFileId(fileId);
+
+        List<SignHereReq> signHeres = new ArrayList<>();
+        SignHereReq signHereReq = new SignHereReq();
+        signHereReq.setPageNumber(0);
+        signHereReq.setXCoordinate(234.8);
+        signHereReq.setYCoordinate(786.2);
+        signHeres.add(signHereReq);
+        signRegionInfo.setSignHeres(signHeres);
+        signRegions.add(signRegionInfo);
+
+        signerInfo.setSignRegions(signRegions);
+
+        List<CreateTaskByFileReq.SignerInfo> signers = new ArrayList<>();
+        signers.add(signerInfo);
+        req.setSigners(signers);
+
+        List<FileReq> fileReqs = new ArrayList<>();
+        FileReq fileReq = new FileReq();
+        fileReq.setFileId(fileId);
+        fileReqs.add(fileReq);
+        req.setFiles(fileReqs);
+
+        BaseRsp<CreateTaskByFileRsp> rsp = signTaskClient.createTaskByFile(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -250,6 +312,7 @@ public class SignDemo extends BaseDemo {
      */
     public void batchCreateByDraftId() throws ApiException {
         BatchCreateByDraftIdReq req = new BatchCreateByDraftIdReq();
+        req.setToken(token);
         BatchCreateByDraftIdReq.SenderInfo sender = new BatchCreateByDraftIdReq.SenderInfo();
         sender.setSignIntendWay(2);
         sender.setUnionId(unionId);
@@ -265,7 +328,7 @@ public class SignDemo extends BaseDemo {
         BatchTemplateSignerReq batchTemplateSignerReq = new BatchTemplateSignerReq();
         ExternalSigner ext = new ExternalSigner();
         ext.setMobile(mobile);
-        ext.setPersonName("小辉");
+        ext.setPersonName("用户姓名");
         batchTemplateSignerReq.setExternalSigner(ext);
         batchTemplateSignerReq.setSignOrder(200);
         batchTemplateSignerReq.setTemplateRoleName("DBA");
@@ -277,7 +340,7 @@ public class SignDemo extends BaseDemo {
         ba1.setTaskSubject("测试合同");
         lists.add(ba1);
         req.setSigntasks(lists);
-        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchCreateByDraftId(token, req);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchCreateByDraftId(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -289,6 +352,7 @@ public class SignDemo extends BaseDemo {
      */
     public void batchAddByDraftId() throws ApiException {
         BatchAddByDraftIdReq req = new BatchAddByDraftIdReq();
+        req.setToken(token);
         req.setBatchNo(batchNo);
         List<BatchDraftIdSigntaskInfoReq> lists = new ArrayList<>();
         BatchDraftIdSigntaskInfoReq ba1 = new BatchDraftIdSigntaskInfoReq();
@@ -318,7 +382,7 @@ public class SignDemo extends BaseDemo {
         lists.add(ba1);
         lists.add(ba1);
         req.setSigntasks(lists);
-        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchAddByDraftId(token, req);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchAddByDraftId(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -329,8 +393,9 @@ public class SignDemo extends BaseDemo {
      */
     public void batchSent() throws ApiException {
         BatchSentReq req = new BatchSentReq();
+        req.setToken(token);
         req.setBatchNo(batchNo);
-        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchSent(token, req);
+        BaseRsp<BatchCreateByDraftIdRsp> rsp = signTaskClient.batchSent(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -341,8 +406,9 @@ public class SignDemo extends BaseDemo {
      */
     public void batchGetSignUrl() throws ApiException {
         BatchGetSignUrlReq req = new BatchGetSignUrlReq();
+        req.setToken(token);
         req.setBatchNo(batchNo);
-        BaseRsp<BatchGetSignUrlRsp> rsp = signTaskClient.batchGetSignUrl(token, req);
+        BaseRsp<BatchGetSignUrlRsp> rsp = signTaskClient.batchGetSignUrl(req);
         CommonUtil.checkResult(rsp);
     }
 
@@ -353,8 +419,9 @@ public class SignDemo extends BaseDemo {
      */
     public void batchGetSigntasksByBatchNo() throws ApiException {
         BatchGetSigntasksByBatchNoReq req = new BatchGetSigntasksByBatchNoReq();
+        req.setToken(token);
         req.setBatchNo(batchNo);
-        BaseRsp<BatchGetSigntasksByBatchNoRsp> rsp = signTaskClient.batchGetSigntasksByBatchNo(token, req);
+        BaseRsp<BatchGetSigntasksByBatchNoRsp> rsp = signTaskClient.batchGetSigntasksByBatchNo(req);
         CommonUtil.checkResult(rsp);
     }
 
