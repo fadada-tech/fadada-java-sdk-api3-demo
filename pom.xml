@@ -48,9 +48,9 @@
             <groupId>com.fadada.api</groupId>
             <artifactId>fadada-java-sdk-api3</artifactId>
             <version>0.0.3</version>
-            <scope>compile</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/libs/fadada-java-sdk-api3-0.0.3.jar</systemPath>
         </dependency>
-
 
     </dependencies>
 
