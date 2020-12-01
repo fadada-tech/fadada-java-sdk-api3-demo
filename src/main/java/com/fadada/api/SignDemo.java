@@ -2,6 +2,7 @@ package com.fadada.api;
 
 import com.fadada.api.bean.req.sign.*;
 import com.fadada.api.bean.req.sign.batch.*;
+import com.fadada.api.bean.req.sign.draft.CreateTaskByDraftIdReq;
 import com.fadada.api.bean.req.sign.file.*;
 import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
 import com.fadada.api.bean.req.sign.template.ExternalSigner;
@@ -14,6 +15,7 @@ import com.fadada.api.bean.rsp.sign.batch.BatchGetSignUrlRsp;
 import com.fadada.api.bean.rsp.sign.batch.BatchGetSigntasksByBatchNoRsp;
 import com.fadada.api.client.SignTaskClient;
 import com.fadada.api.exception.ApiException;
+import com.fadada.api.utils.string.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,10 @@ import java.util.List;
  */
 public class SignDemo extends BaseDemo {
 
-    private String taskId = "任务Id";
-    private String fileId = "文件ID";
-    private String draftId = "模板ID";
-    private String sealId = "印章ID";
+    private String taskId = "签署任务编号";
+    private String fileId = "文件编号";
+    private String draftId = "模板编号";
+    private String sealId = "印章编号";
     private String mobile = "手机号码";
     private String batchNo = "签署批次号值";
 
@@ -75,10 +77,13 @@ public class SignDemo extends BaseDemo {
             signDemo.getSignPreviewUrl();
             // 获取签署详请
             signDemo.getTaskDetailByTaskId();
-            //依据原始文件创建签署任务
+            // 依据原始文件创建签署任务
             signDemo.createTaskByFile();
 
+            // 根据草稿Id创建签署任务
+            signDemo.createSignTaskByDraftId();
 
+            // ------- 批量任务------
             // 创建批次号批量任务
             signDemo.batchCreateByDraftId();
             // 批次号批量任务新增
@@ -252,58 +257,6 @@ public class SignDemo extends BaseDemo {
         CommonUtil.checkResult(rsp);
     }
 
-    /**
-     * 依据原始文件创建签署任务
-     *
-     * @throws ApiException
-     */
-    public void createTaskByFile() throws ApiException {
-        CreateTaskByFileReq req = new CreateTaskByFileReq();
-        req.setToken(token);
-        req.setTaskSubject("房屋租赁");
-        req.setSort(1);
-        req.setStatus("sent");
-
-
-        CreateTaskByFileReq.TaskSenderInfo sender = new CreateTaskByFileReq.TaskSenderInfo();
-        sender.setUnionId(unionId);
-        req.setSender(sender);
-
-        CreateTaskByFileReq.SignerInfo signerInfo = new CreateTaskByFileReq.SignerInfo();
-        CreateTaskByFileReq.ExternalSignerReq externalSignerReq = new CreateTaskByFileReq.ExternalSignerReq();
-        externalSignerReq.setMobile(mobile);
-        externalSignerReq.setPersonName("用户名称");
-        signerInfo.setExternalSigner(externalSignerReq);
-
-        List<CreateTaskByFileReq.SignRegionInfo> signRegions = new ArrayList<>();
-        CreateTaskByFileReq.SignRegionInfo signRegionInfo = new CreateTaskByFileReq.SignRegionInfo();
-        signRegionInfo.setFileId(fileId);
-
-        List<SignHereReq> signHeres = new ArrayList<>();
-        SignHereReq signHereReq = new SignHereReq();
-        signHereReq.setPageNumber(0);
-        signHereReq.setXCoordinate(234.8);
-        signHereReq.setYCoordinate(786.2);
-        signHeres.add(signHereReq);
-        signRegionInfo.setSignHeres(signHeres);
-        signRegions.add(signRegionInfo);
-
-        signerInfo.setSignRegions(signRegions);
-
-        List<CreateTaskByFileReq.SignerInfo> signers = new ArrayList<>();
-        signers.add(signerInfo);
-        req.setSigners(signers);
-
-        List<FileReq> fileReqs = new ArrayList<>();
-        FileReq fileReq = new FileReq();
-        fileReq.setFileId(fileId);
-        fileReqs.add(fileReq);
-        req.setFiles(fileReqs);
-
-        BaseRsp<CreateTaskByFileRsp> rsp = signTaskClient.createTaskByFile(req);
-        CommonUtil.checkResult(rsp);
-    }
-
 
     /**
      * 创建批次号批量任务
@@ -423,6 +376,142 @@ public class SignDemo extends BaseDemo {
         req.setBatchNo(batchNo);
         BaseRsp<BatchGetSigntasksByBatchNoRsp> rsp = signTaskClient.batchGetSigntasksByBatchNo(req);
         CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 根据草稿id创建签署任务
+     *
+     * @throws ApiException
+     */
+    public void createSignTaskByDraftId()
+            throws ApiException {
+        CreateTaskByDraftIdReq req = new CreateTaskByDraftIdReq();
+        req.setToken(token);
+        req.setDraftId(draftId);
+        req.setSort(2);
+        req.setTaskSubject("签署任务主题");
+        req.setAutoArchive(1);
+        req.setStatus("sent");
+
+        CreateTaskByDraftIdReq.CreateTaskSignerInfo createTaskSignerInfo =
+                new CreateTaskByDraftIdReq.CreateTaskSignerInfo();
+        createTaskSignerInfo.setTemplateRoleName("角色名称");
+        ExternalSignerReq externalSignerReq = new ExternalSignerReq();
+        externalSignerReq.setMobile("手机号码");
+        externalSignerReq.setPersonName("个人名称");
+        createTaskSignerInfo.setExternalSigner(externalSignerReq);
+        CreateTaskByDraftIdReq.SignerInfo signerInfo = new CreateTaskByDraftIdReq.SignerInfo();
+        CreateTaskByDraftIdReq.SignatoryInfo signatoryInfo = new CreateTaskByDraftIdReq.SignatoryInfo();
+        signatoryInfo.setSignerId(unionId);
+        signerInfo.setSignatory(signatoryInfo);
+        createTaskSignerInfo.setSigner(signerInfo);
+        List<CreateTaskByDraftIdReq.CreateTaskSignerInfo> infos = new ArrayList<>();
+        infos.add(createTaskSignerInfo);
+        req.setSigners(infos);
+        BaseRsp<CreateTaskByDraftIdRsp> rsp = signTaskClient.createTaskByDraftId(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    public void createTaskByFile() throws ApiException {
+        CreateTaskByFileReq req = new CreateTaskByFileReq();
+        req.setToken(token);
+        req.setTaskSubject("签署任务主题");
+        req.setSort(2);
+        req.setStatus("sent");
+
+        CreateTaskByFileReq.SignerInfo signerInfo1 = new CreateTaskByFileReq.SignerInfo();
+        //应用内部签署方对象1  个人手动签署, 设置签署文件对应签署坐标
+        signerInfo1.setSigner(getSignerReq("个人unionId",
+                null, 0, null, null, null));
+
+        signerInfo1.setSignRegions(getSignRegion(0, 600D, 600D,
+                "文件编号"));
+
+
+        CreateTaskByFileReq.SignerInfo signerInfo2 = new CreateTaskByFileReq.SignerInfo();
+        //应用内部企业自动签署的场景， companyUnionId必须是平台方企业，或者，作过授权自动签署给平台方的企业
+        signerInfo2.setSigner(getSignerReq(null,
+                "企业unionId", 1, null, null, null));
+        signerInfo2.setSignRegions(getSignRegion(0, 300D, 300D,
+                "文件编号"));
+
+        CreateTaskByFileReq.SignerInfo signerInfo3 = new CreateTaskByFileReq.SignerInfo();
+        //应用内部企业手动签署的场景
+        signerInfo3.setSigner(getSignerReq(null,
+                "企业unionId", 1, null, null, null));
+        signerInfo3.setSignRegions(getSignRegion(0, 900D, 900D,
+                "文件编号"));
+
+
+        //签署列表
+        List<CreateTaskByFileReq.SignerInfo> signers = new ArrayList<>();
+        signers.add(signerInfo1);
+        signers.add(signerInfo2);
+        signers.add(signerInfo3);
+        req.setSigners(signers);
+
+        //所有的签署文件集合
+        List<FileReq> fileReqs = new ArrayList<>();
+        FileReq fileReq = new FileReq();
+        fileReq.setFileId("文件编号");
+        fileReqs.add(fileReq);
+        req.setFiles(fileReqs);
+
+        BaseRsp<CreateTaskByFileRsp> rsp = signTaskClient.createTaskByFile(req);
+        CommonUtil.checkResult(rsp);
+
+    }
+
+    public SignerReqV2 getSignerReq(String personUnionId, String companyUnionId,
+                                    Integer signWay, Integer signIntendWay,
+                                    String personSealId, String companySealId) {
+
+        SignerReqV2 signerReq1 = new SignerReqV2();
+        if (StringUtil.isNotBlank(personUnionId)) {
+            SignatoryReq signatory = new SignatoryReq();
+            signatory.setSignerId(personUnionId);
+            if (StringUtil.isNotBlank(personSealId)) {
+                SealReq sealReq = new SealReq();
+                sealReq.setSealId(personSealId);
+                signatory.setSeal(sealReq);
+            }
+            signerReq1.setSignatory(signatory);
+        }
+        if (StringUtil.isNotBlank(companyUnionId)) {
+            CorpReq corp = new CorpReq();
+            corp.setCorpId(companyUnionId);
+            if (StringUtil.isNotBlank(companySealId)) {
+                SealReq sealReq = new SealReq();
+                sealReq.setSealId(companySealId);
+                corp.setSeal(sealReq);
+            }
+            signerReq1.setCorp(corp);
+        }
+        if (signWay != null || signIntendWay != null) {
+            SignActionReq signAction = new SignActionReq();
+            signAction.setSignIntendWay(signIntendWay);
+            signAction.setSignWay(signWay);
+            signerReq1.setSignAction(signAction);
+        }
+
+        return signerReq1;
+    }
+
+    private List<CreateTaskByFileReq.SignRegionInfo> getSignRegion(int p, double x, double y, String fileId) {
+        List<CreateTaskByFileReq.SignRegionInfo> signRegionsReq = new ArrayList<>();
+        CreateTaskByFileReq.SignRegionInfo signRegionReq = new CreateTaskByFileReq.SignRegionInfo();
+        List<SignHereReq> signHereReqs = new ArrayList<>();
+        SignHereReq signHereReq = new SignHereReq();
+        signHereReq.setPageNumber(p);
+        signHereReq.setXCoordinate(x);
+        signHereReq.setYCoordinate(y);
+        signHereReqs.add(signHereReq);
+        signRegionReq.setSignHeres(signHereReqs);
+        signRegionReq.setFileId(fileId);
+        signRegionsReq.add(signRegionReq);
+        return signRegionsReq;
     }
 
 

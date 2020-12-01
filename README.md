@@ -17,10 +17,7 @@ Oauth2Client oauth2Client = new Oauth2Client(fadadaApiClient);
 BaseRsp<AccessTokenRsp> rsp = oauth2Client.getToken();
 ```
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 9a951c94e0035812371112ae23cc5d53f859a008
 ### 注意事项
 
 (1) 由于本项目只是一个demo，所以对token的时效性没有处理，真正引入SDK使用请对token时效做好控制，避免token失效带来的问题。

@@ -22,7 +22,9 @@ import java.text.SimpleDateFormat;
 public class AccountDemo extends BaseDemo {
 
     private String returnUrl = "https://fadada.com";
-    private String thirdUserId = "第三方用户Id";
+    private String grantCode = "授权码";
+    private String mobile = "手机号码";
+
 
     private AccountClient accountClient;
 
@@ -57,6 +59,9 @@ public class AccountDemo extends BaseDemo {
             accountDemo.checkAccountInfo();
             // 获取接入方信息
             accountDemo.getAccessObjectInfo();
+
+            // 根据uuid下载文件base64
+            accountDemo.getFileBase64();
 
             //  ----- 第三方服务 -------
             // 获取开通第三方服务地址
@@ -142,7 +147,7 @@ public class AccountDemo extends BaseDemo {
     public void checkAccountInfo() throws ApiException {
         CheckAccountInfoReq req = new CheckAccountInfoReq();
         req.setToken(token);
-        req.setMobile("手机号码");
+        req.setMobile(mobile);
         BaseRsp<CheckAccountInfoRsp> rsp = accountClient.checkAccountInfo(req);
         CommonUtil.checkResult(rsp);
     }
@@ -168,7 +173,6 @@ public class AccountDemo extends BaseDemo {
         GetOpenServerUrlReq req = new GetOpenServerUrlReq();
         req.setToken(token);
         req.setRedirectUrl(returnUrl);
-        req.setThirdUserId(thirdUserId);
         req.setUnionId(unionId);
         BaseRsp<GetOpenServerUrlRsp> rsp = accountClient.getOpenServerUrl(req);
         CommonUtil.checkResult(rsp);
@@ -183,7 +187,7 @@ public class AccountDemo extends BaseDemo {
 
         GetUserTokenReq req = new GetUserTokenReq();
         req.setToken(token);
-        req.setGrantCode("授权码");
+        req.setGrantCode(grantCode);
         BaseRsp<GetUserTokenRsp> rsp = accountClient.getUserToken(req);
         CommonUtil.checkResult(rsp);
     }
@@ -196,10 +200,23 @@ public class AccountDemo extends BaseDemo {
     public void cancelServer() throws ApiException {
         CancelServerReq req = new CancelServerReq();
         req.setToken(token);
-        req.setThirdUserId(thirdUserId);
         req.setUnionId(unionId);
         BaseRsp<CheckAccountInfoRsp> rsp = accountClient.cancelServer(req);
         CommonUtil.checkResult(rsp);
     }
+
+    /**
+     * 根据uuid下载文件base64
+     *
+     * @throws ApiException
+     */
+    public void getFileBase64() throws ApiException {
+        GetFileBase64Req req = new GetFileBase64Req();
+        req.setToken(token);
+        req.setUuid("文件uuid");
+        BaseRsp<GetFileBase64Rsp> rsp = accountClient.getFileBase64(req);
+        CommonUtil.checkResult(rsp);
+    }
+
 
 }

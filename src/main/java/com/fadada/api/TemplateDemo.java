@@ -39,19 +39,27 @@ public class TemplateDemo extends BaseDemo {
             // 上传企业模板文件附件
             templateDemo.uploadCompanyTemplateFile();
             // 修改企业模板信息
-//            templateDemo.updateCompanyTemplate();
-            // 获取企业模板控件维护页面url
-//            templateDemo.getEditCompanyTemplateUrl();
+            templateDemo.updateCompanyTemplate();
+            //  获取企业模板控件维护页面url
+            templateDemo.getEditCompanyTemplateUrl();
             // 删除企业模板文件附件
-//            templateDemo.delCompanyTemplateFile();
+            templateDemo.delCompanyTemplateFile();
             // 获取企业模板列表
-//            templateDemo.queryCompanyTemplateList();
+            templateDemo.queryCompanyTemplateList();
             // 下载企业模板文件
-//            templateDemo.downloadCompanyTemplateFile();
+            templateDemo.downloadCompanyTemplateFile();
+
             // 获取模板详请
-//            templateDemo.getTemplateDetailById();
+            templateDemo.getTemplateDetailById();
             // 模板填充
-//            templateDemo.createByTemplate();
+            templateDemo.createByTemplate();
+
+            // 模板初始化
+            templateDemo.templateInit();
+            // 模板页面编辑链接
+            templateDemo.getTemplateMainUrl();
+            // 模板详请
+            templateDemo.getTemplateDetail();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,6 +72,7 @@ public class TemplateDemo extends BaseDemo {
     public void uploadCompanyTemplateFile() throws ApiException {
         UploadCompanyTemplateFileReq req = new UploadCompanyTemplateFileReq();
         req.setToken(token);
+        req.setUserToken(userToken);
         req.setFileType(1, templateId);
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
         File file = new File(path);
@@ -195,6 +204,46 @@ public class TemplateDemo extends BaseDemo {
         templateFiles.add(t2);
         req.setTemplateFiles(templateFiles);
         BaseRsp<DraftRsp> rsp = templateClient.createByTemplate(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 模板初始化
+     */
+    private void templateInit() throws ApiException {
+        TemplateInitReq req = new TemplateInitReq();
+        req.setToken(token);
+        TemplateInitReq.TemplateInfo templateInfo = new TemplateInitReq.TemplateInfo();
+        templateInfo.setTemplateName("测试模板");
+        templateInfo.setTemplateRemark("这是模板哦");
+        req.setTemplateInfo(templateInfo);
+        BaseRsp<TemplateInitRsp> rsp = templateClient.templateInit(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 获取模板编辑链接
+     */
+    private void getTemplateMainUrl() throws ApiException {
+        GetTemplateMainUrlReq req = new GetTemplateMainUrlReq();
+        req.setToken(token);
+        GetTemplateMainUrlReq.TemplateInfo templateInfo = new GetTemplateMainUrlReq.TemplateInfo();
+        templateInfo.setTemplateId(templateId);
+        req.setTemplateInfo(templateInfo);
+        BaseRsp<GetTemplateMainUrlRsp> rsp = templateClient.getTemplateMainUrl(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取模板详请
+     */
+    private void getTemplateDetail() throws ApiException {
+        GetTemplateDetailReq req = new GetTemplateDetailReq();
+        req.setToken(token);
+        req.setTemplateId(templateId);
+        BaseRsp<GetTemplateDetailRsp> rsp = templateClient.getTemplateDetail(req);
         CommonUtil.checkResult(rsp);
     }
 
