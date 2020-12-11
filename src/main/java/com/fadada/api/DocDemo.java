@@ -23,7 +23,7 @@ import java.io.File;
 public class DocDemo extends BaseDemo {
 
     private String taskId = "签署任务Id";
-    private String draftId = "模板Id";
+    private String draftId = "草稿编号";
     private String fileId = "文件Id";
     public DocumentClient documentClient;
 
@@ -185,5 +185,4 @@ public class DocDemo extends BaseDemo {
             log.error("公证处保全报告下载失败：{}", rsp.toString());
         }
     }
-
 }
