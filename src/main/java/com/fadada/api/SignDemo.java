@@ -397,6 +397,7 @@ public class SignDemo extends BaseDemo {
         CreateTaskByDraftIdReq.CreateTaskSignerInfo createTaskSignerInfo =
                 new CreateTaskByDraftIdReq.CreateTaskSignerInfo();
         createTaskSignerInfo.setTemplateRoleName("角色名称");
+        createTaskSignerInfo.setSignOrder(1);
         ExternalSignerReq externalSignerReq = new ExternalSignerReq();
         externalSignerReq.setMobile("手机号码");
         externalSignerReq.setPersonName("个人名称");
