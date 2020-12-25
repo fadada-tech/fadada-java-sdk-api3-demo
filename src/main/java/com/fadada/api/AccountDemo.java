@@ -59,6 +59,8 @@ public class AccountDemo extends BaseDemo {
             accountDemo.checkAccountInfo();
             // 获取接入方信息
             accountDemo.getAccessObjectInfo();
+            // 根据clientId获取unionId
+            accountDemo.getUnionIds();
 
             // 根据uuid下载文件base64
             accountDemo.getFileBase64();
@@ -216,6 +218,19 @@ public class AccountDemo extends BaseDemo {
         req.setUuid("文件uuid");
         BaseRsp<GetFileBase64Rsp> rsp = accountClient.getFileBase64(req);
         CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 根据clientId获取unionId
+     *
+     * @throws ApiException
+     */
+    public void getUnionIds() throws ApiException {
+        GetUnionIdsReq req = new GetUnionIdsReq();
+        req.setToken(token);
+        req.setClientId("6666");
+        BaseRsp<GetUnionIdsRsp> rsp = accountClient.getUnionIds(req);
+        System.out.println(rsp.toString());
     }
 
 

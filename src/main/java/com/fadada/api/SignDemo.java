@@ -83,6 +83,9 @@ public class SignDemo extends BaseDemo {
             // 根据草稿Id创建签署任务
             signDemo.createSignTaskByDraftId();
 
+            // 解锁签署任务
+            signDemo.unlock();
+
             // ------- 批量任务------
             // 创建批次号批量任务
             signDemo.batchCreateByDraftId();
@@ -463,6 +466,28 @@ public class SignDemo extends BaseDemo {
         BaseRsp<CreateTaskByFileRsp> rsp = signTaskClient.createTaskByFile(req);
         CommonUtil.checkResult(rsp);
 
+    }
+
+    /**
+     * 解锁签署任务
+     *
+     * @throws ApiException
+     */
+    public void unlock() throws ApiException {
+        UnlockReq req = new UnlockReq();
+        req.setToken(token);
+        req.setTaskId(taskId);
+        List<UnlockReq.UnlockSignerInfo> signers = new ArrayList<>();
+        UnlockReq.UnlockSignerInfo signerInfo = new UnlockReq.UnlockSignerInfo();
+        UnlockReq.Signer signer = new UnlockReq.Signer();
+        SignatoryReq signatoryReq = new SignatoryReq();
+        signatoryReq.setSignerId(unionId);
+        signer.setSignatory(signatoryReq);
+        signerInfo.setSigner(signer);
+        signers.add(signerInfo);
+        req.setSigners(signers);
+        BaseRsp<UnlockRsp> rsp = signTaskClient.unlock(req);
+        CommonUtil.checkResult(rsp);
     }
 
     public SignerReqV2 getSignerReq(String personUnionId, String companyUnionId,
