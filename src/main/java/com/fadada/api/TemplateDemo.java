@@ -60,6 +60,8 @@ public class TemplateDemo extends BaseDemo {
             templateDemo.getTemplateMainUrl();
             // 模板详请
             templateDemo.getTemplateDetail();
+            // 新增自定义控件
+            templateDemo.addWidget();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,6 +246,22 @@ public class TemplateDemo extends BaseDemo {
         req.setToken(token);
         req.setTemplateId(templateId);
         BaseRsp<GetTemplateDetailRsp> rsp = templateClient.getTemplateDetail(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 新增自定义控件
+     */
+    private void addWidget() throws ApiException {
+        AddWidgetReq req = new AddWidgetReq();
+        req.setToken(token);
+        req.setAlign(1);
+        req.setFontSize(12);
+        req.setIsRequired(1);
+        req.setFontType(1);
+        req.setWidgetName("控件名称");
+        req.setWidgetType(1);
+        BaseRsp rsp = templateClient.addWidget(req);
         CommonUtil.checkResult(rsp);
     }
 
