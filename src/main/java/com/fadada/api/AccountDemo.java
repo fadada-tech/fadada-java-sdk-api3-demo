@@ -50,28 +50,28 @@ public class AccountDemo extends BaseDemo {
             // 获取个人信息确定地址
             accountDemo.getPersonUnionIdUrl();
             // 获取个人信息
-//            accountDemo.getPersonInfo();
+            accountDemo.getPersonInfo();
             // 获取企业信息
-//            accountDemo.getCompanyInfo();
+            accountDemo.getCompanyInfo();
             // 获取企业信息确定地址
-//            accountDemo.getCompanyUnionIdUrl();
+            accountDemo.getCompanyUnionIdUrl();
             // 账号信息校验
-//            accountDemo.checkAccountInfo();
+            accountDemo.checkAccountInfo();
             // 获取接入方信息
-//            accountDemo.getAccessObjectInfo();
+            accountDemo.getAccessObjectInfo();
             // 根据clientId获取unionId
-//            accountDemo.getUnionIds();
+            accountDemo.getUnionIds();
 
             // 根据uuid下载文件base64
-//            accountDemo.getFileBase64();
+            accountDemo.getFileBase64();
 
             //  ----- 第三方服务 -------
             // 获取开通第三方服务地址
-//            accountDemo.getOpenServerUrl();
+            accountDemo.getOpenServerUrl();
             // 获取userToken
-//            accountDemo.getUserToken();
+            accountDemo.getUserToken();
             // 取消第三方服务地址
-//            accountDemo.cancelServer();
+            accountDemo.cancelServer();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +88,7 @@ public class AccountDemo extends BaseDemo {
         GetPersonUnionIdUrlReq req = new GetPersonUnionIdUrlReq();
         req.setToken(token);
         req.setClientId(clientId);
-//        req.setRedirectUrl(returnUrl);
+        req.setRedirectUrl(returnUrl);
         BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getPersonUnionIdUrl(req);
         CommonUtil.checkResult(rsp);
     }
@@ -116,7 +116,7 @@ public class AccountDemo extends BaseDemo {
         GetCompanyUnionIdUrlReq req = new GetCompanyUnionIdUrlReq();
         req.setToken(token);
         req.setClientId(clientId);
-//        req.setRedirectUrl(returnUrl);
+        req.setRedirectUrl(returnUrl);
         req.setAllowModify(1);
         CompanyReq companyReq = new CompanyReq();
         companyReq.setCompanyName("测试有限公司");

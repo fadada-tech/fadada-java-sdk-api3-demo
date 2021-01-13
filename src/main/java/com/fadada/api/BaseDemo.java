@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
  */
 public class BaseDemo {
     public static Logger log = LoggerFactory.getLogger(BaseDemo.class);
-    public static String APPID = "FA18769044";
-    public static String APPKEY = "IIODEQWAGQUPVDSIHJDPLB3DJ7KI2ZYH";
-    public static String SERVERURL = "https://v4demo-gw.fadada.com/api/v3/";
+    public static String APPID = "appId值";
+    public static String APPKEY = "appKey值";
+    public static String SERVERURL = "服务请求地址";
 
     public static String unionId = "用户unionId";
 
