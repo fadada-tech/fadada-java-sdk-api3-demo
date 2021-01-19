@@ -41,6 +41,8 @@ public class DocDemo extends BaseDemo {
 
             // 合同文件上传
             docDemo.uploadFile();
+            // 通过文件地址上传文件
+            docDemo.uploadFileByUrl();
             // 下载签署文件
             docDemo.getBySignFileId();
             // 下载合同草稿文件
@@ -71,6 +73,23 @@ public class DocDemo extends BaseDemo {
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
         File file = new File(path);
         BaseRsp<UploadFileRsp> rsp = documentClient.uploadFile(uploadFileReq, file);
+        CommonUtil.checkResult(rsp);
+        return rsp.getData();
+    }
+
+    /**
+     * 通过文件地址上传文件
+     *
+     * @return
+     * @throws ApiException
+     */
+    public UploadFileRsp uploadFileByUrl() throws ApiException {
+        UploadFileByUrlReq req = new UploadFileByUrlReq();
+        req.setToken(token);
+        req.setFileType(1);
+        req.setFileName("文件名称");
+        req.setFileUrl("文件下载地址");
+        BaseRsp<UploadFileRsp> rsp = documentClient.uploadFileByUrl(req);
         CommonUtil.checkResult(rsp);
         return rsp.getData();
     }
