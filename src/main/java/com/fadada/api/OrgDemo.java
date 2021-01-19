@@ -55,8 +55,9 @@ public class OrgDemo extends BaseDemo {
         DelSubEmployeeReq req = new DelSubEmployeeReq();
         req.setToken(token);
         req.setCompany(unionId);
-        req.setEmployeeInfo(unionId);
-        req.setUnionId(unionId);
+        DelSubEmployeeReq.EmployeeInfo employeeInfo = new DelSubEmployeeReq.EmployeeInfo();
+        employeeInfo.setUnionId(unionId);
+        req.setEmployeeInfo(employeeInfo);
         BaseRsp rsp = orgClient.delSubEmployee(req);
         CommonUtil.checkResult(rsp);
     }
