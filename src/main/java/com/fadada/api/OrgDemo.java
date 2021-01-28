@@ -70,8 +70,7 @@ public class OrgDemo extends BaseDemo {
     public void getAddEmployeeUrl() throws ApiException {
         GetAddEmployeeUrlReq req = new GetAddEmployeeUrlReq();
         req.setToken(token);
-//        req.setCompany(unionId);
-        req.setUserToken(userToken);
+        req.setCompany(unionId);
         GetAddEmployeeUrlReq.EmployeeInfo employeeInfo = new GetAddEmployeeUrlReq.EmployeeInfo();
         employeeInfo.setUnionId(unionId);
         req.setEmployeeInfo(employeeInfo);
@@ -87,8 +86,8 @@ public class OrgDemo extends BaseDemo {
     public void getAddSubCompanyUrl() throws ApiException {
         GetAddSubCompanyUrlReq req = new GetAddSubCompanyUrlReq();
         req.setToken(token);
-        req.setParentCompany("");
-        req.setSubCompany("");
+        req.setParentCompany("母公司unionId");
+        req.setSubCompany("子公司unionId");
         BaseRsp<GetAddSubCompanyUrlRsp> rsp = orgClient.getAddSubCompanyUrl(req);
         CommonUtil.checkResult(rsp);
     }
@@ -114,7 +113,7 @@ public class OrgDemo extends BaseDemo {
     public void getChildCompanyList() throws ApiException {
         GetChildCompanyListReq req = new GetChildCompanyListReq();
         req.setToken(token);
-        req.setCompany("");
+        req.setCompany("指定企业unionId");
         BaseRsp<List<GetChildCompanyListRsp>> rsp = orgClient.getChildCompanyList(req);
         CommonUtil.checkResult(rsp);
     }
@@ -127,7 +126,7 @@ public class OrgDemo extends BaseDemo {
     public void getEmployee() throws ApiException {
         GetEmployeeReq req = new GetEmployeeReq();
         req.setToken(token);
-        req.setCompany("");
+        req.setCompany("指定企业unionId");
         BaseRsp<List<GetEmployeeRsp>> rsp = orgClient.getEmployee(req);
         CommonUtil.checkResult(rsp);
     }
@@ -140,8 +139,8 @@ public class OrgDemo extends BaseDemo {
     public void removeSubCompany() throws ApiException {
         RemoveSubCompanyReq req = new RemoveSubCompanyReq();
         req.setToken(token);
-        req.setParentCompany("");
-        req.setSubCompany("");
+        req.setParentCompany("母公司unionId");
+        req.setSubCompany("子公司unionId");
         BaseRsp rsp = orgClient.removeSubCompany(req);
         CommonUtil.checkResult(rsp);
     }

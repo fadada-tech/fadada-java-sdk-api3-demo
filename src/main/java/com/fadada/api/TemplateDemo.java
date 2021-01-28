@@ -74,7 +74,6 @@ public class TemplateDemo extends BaseDemo {
     public void uploadCompanyTemplateFile() throws ApiException {
         UploadCompanyTemplateFileReq req = new UploadCompanyTemplateFileReq();
         req.setToken(token);
-        req.setUserToken(userToken);
         req.setFileType(1, templateId);
         String path = getClass().getClassLoader().getResource("sampleContract.pdf").getFile();
         File file = new File(path);
