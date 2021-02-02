@@ -86,6 +86,9 @@ public class SignDemo extends BaseDemo {
             // 解锁签署任务
             signDemo.unlock();
 
+            // 获取快捷签署链接
+            signDemo.getQuickSignUrl();
+
             // ------- 批量任务------
             // 创建批次号批量任务
             signDemo.batchCreateByDraftId();
@@ -487,6 +490,21 @@ public class SignDemo extends BaseDemo {
         signers.add(signerInfo);
         req.setSigners(signers);
         BaseRsp<UnlockRsp> rsp = signTaskClient.unlock(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 获取快捷签署链接
+     *
+     * @throws ApiException
+     */
+    public void getQuickSignUrl() throws ApiException {
+        GetQuickSignUrlReq req = new GetQuickSignUrlReq();
+        req.setToken(token);
+        req.setMobile("手机号码");
+        req.setTaskId(taskId);
+        BaseRsp<GetQuickSignUrlRsp> rsp = signTaskClient.getQuickSignUrl(req);
         CommonUtil.checkResult(rsp);
     }
 

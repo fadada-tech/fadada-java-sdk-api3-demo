@@ -73,6 +73,9 @@ public class AccountDemo extends BaseDemo {
             // 取消第三方服务地址
             accountDemo.cancelServer();
 
+            // 生态用户下单接口
+            accountDemo.purchase();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -230,7 +233,18 @@ public class AccountDemo extends BaseDemo {
         req.setToken(token);
         req.setClientId("6666");
         BaseRsp<GetUnionIdsRsp> rsp = accountClient.getUnionIds(req);
-        System.out.println(rsp.toString());
+        CommonUtil.checkResult(rsp);
+    }
+
+    public void purchase() throws ApiException {
+        PurchaseReq req = new PurchaseReq();
+        req.setToken(token);
+        req.setUserToken(userToken);
+        req.setTenantName("租户名称");
+        req.setTenantUnionId("租户");
+        req.setProductSku("售品sku");
+        BaseRsp<PurchaseRsp> rsp = accountClient.purchase(req);
+        CommonUtil.checkResult(rsp);
     }
 
 
