@@ -433,7 +433,7 @@ public class SignDemo extends BaseDemo {
         signerInfo1.setSigner(getSignerReq("个人unionId",
                 null, 0, null, null, null));
 
-        signerInfo1.setSignRegions(getSignRegion(0, 600D, 600D,
+        signerInfo1.setSignRegions(getSignRegion(1, null, 0, 600D, 600D,
                 "文件编号"));
 
 
@@ -441,14 +441,14 @@ public class SignDemo extends BaseDemo {
         //应用内部企业自动签署的场景， companyUnionId必须是平台方企业，或者，作过授权自动签署给平台方的企业
         signerInfo2.setSigner(getSignerReq(null,
                 "企业unionId", 1, null, null, null));
-        signerInfo2.setSignRegions(getSignRegion(0, 300D, 300D,
+        signerInfo2.setSignRegions(getSignRegion(1, null, 0, 300D, 300D,
                 "文件编号"));
 
         CreateTaskByFileReq.SignerInfo signerInfo3 = new CreateTaskByFileReq.SignerInfo();
         //应用内部企业手动签署的场景
         signerInfo3.setSigner(getSignerReq(null,
                 "企业unionId", 1, null, null, null));
-        signerInfo3.setSignRegions(getSignRegion(0, 900D, 900D,
+        signerInfo3.setSignRegions(getSignRegion(1, null, 0, 900D, 900D,
                 "文件编号"));
 
 
@@ -543,17 +543,22 @@ public class SignDemo extends BaseDemo {
         return signerReq1;
     }
 
-    private List<CreateTaskByFileReq.SignRegionInfo> getSignRegion(int p, double x, double y, String fileId) {
+    private List<CreateTaskByFileReq.SignRegionInfo> getSignRegion(int type, String keyWord, int p, double x, double y, String fileId) {
         List<CreateTaskByFileReq.SignRegionInfo> signRegionsReq = new ArrayList<>();
         CreateTaskByFileReq.SignRegionInfo signRegionReq = new CreateTaskByFileReq.SignRegionInfo();
         List<SignHereReq> signHereReqs = new ArrayList<>();
         SignHereReq signHereReq = new SignHereReq();
-        signHereReq.setPageNumber(p);
-        signHereReq.setXCoordinate(x);
-        signHereReq.setYCoordinate(y);
+        if (type == 1) {
+            signHereReq.setPageNumber(p);
+            signHereReq.setXCoordinate(x);
+            signHereReq.setYCoordinate(y);
+        } else {
+            signHereReq.setKeyWord(keyWord);
+        }
         signHereReqs.add(signHereReq);
         signRegionReq.setSignHeres(signHereReqs);
         signRegionReq.setFileId(fileId);
+        signRegionReq.setType(type);
         signRegionsReq.add(signRegionReq);
         return signRegionsReq;
     }
