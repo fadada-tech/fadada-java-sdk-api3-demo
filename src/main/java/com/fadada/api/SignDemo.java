@@ -489,7 +489,7 @@ public class SignDemo extends BaseDemo {
         signerInfo.setSigner(signer);
         signers.add(signerInfo);
         req.setSigners(signers);
-        BaseRsp<UnlockRsp> rsp = signTaskClient.unlock(req);
+        BaseRsp<List<UnlockRsp>> rsp = signTaskClient.unlock(req);
         CommonUtil.checkResult(rsp);
     }
 
