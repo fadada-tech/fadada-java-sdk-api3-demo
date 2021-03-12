@@ -65,6 +65,7 @@ public class ReviseDemo extends BaseDemo {
         req.setTaskSubject("主题");
         req.setSort(1);
         req.setFinalizeWay(1);
+        req.setRedirectUrl("重定向地址");
         List<CreateReviseTaskReq.FillRoleInfo> roles = new ArrayList<>();
         CreateReviseTaskReq.FillRoleInfo fillRoleInfo = new CreateReviseTaskReq.FillRoleInfo();
         fillRoleInfo.setUnionId(unionId);
