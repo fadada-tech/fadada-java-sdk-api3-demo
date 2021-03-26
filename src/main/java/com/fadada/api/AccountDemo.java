@@ -36,7 +36,7 @@ public class AccountDemo extends BaseDemo {
         clientId = "clientId" + sdf.format(ts);
     }
 
-    public AccountDemo(FadadaApiClient fadadaApiClient) {
+    public AccountDemo(DefaultFadadaApiClient fadadaApiClient) {
         this.accountClient = new AccountClient(fadadaApiClient);
     }
 
@@ -130,6 +130,7 @@ public class AccountDemo extends BaseDemo {
         applicantR.setUnionId(unionId);
         req.setCompany(companyReq);
         req.setApplicant(applicantR);
+        req.setReRealName(0);
         BaseRsp<GetUnionIdUrlRsp> rsp = accountClient.getCompanyUnionIdUrl(req);
         CommonUtil.checkResult(rsp);
     }
