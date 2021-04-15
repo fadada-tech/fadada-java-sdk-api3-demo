@@ -3,6 +3,7 @@ package com.fadada.api;
 import com.fadada.api.bean.req.account.NoticeReq;
 import com.fadada.api.bean.req.revise.*;
 import com.fadada.api.bean.rsp.BaseRsp;
+import com.fadada.api.bean.rsp.document.DownLoadFileRsp;
 import com.fadada.api.bean.rsp.revise.CreateReviseTaskRsp;
 import com.fadada.api.bean.rsp.revise.GetFillFileUrlRsp;
 import com.fadada.api.bean.rsp.revise.ReviseTaskDetailRsp;
@@ -47,6 +48,8 @@ public class ReviseDemo extends BaseDemo {
             reviseDemo.saveFillValues();
             // 定稿任务撤销
             reviseDemo.cancelReviseTask();
+            // 下载定稿任务
+            reviseDemo.downloadReviseTask();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,6 +155,25 @@ public class ReviseDemo extends BaseDemo {
         req.setTaskId(taskId);
         BaseRsp rsp = reviseTaskClient.cancelReviseTask(req);
         CommonUtil.checkResult(rsp);
+    }
+
+
+    /**
+     * 下载定稿任务
+     *
+     * @throws ApiException
+     */
+    private void downloadReviseTask() throws ApiException {
+        DownloadReviseTaskReq req = new DownloadReviseTaskReq();
+        req.setToken(token);
+        req.setTaskId(taskId);
+        req.setDownloadWay(0);
+        BaseRsp<DownLoadFileRsp> rsp = reviseTaskClient.downloadReviseTask(req);
+        if (rsp.isSuccess()) {
+            CommonUtil.fileSink(rsp.getData().getFileBytes(), "d:\\", "定稿任务.zip");
+        } else {
+            log.error("下载定稿任务失败：{}", rsp);
+        }
     }
 
 

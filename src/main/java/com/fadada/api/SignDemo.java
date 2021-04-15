@@ -8,6 +8,7 @@ import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
 import com.fadada.api.bean.req.sign.template.ExternalSigner;
 import com.fadada.api.bean.req.sign.template.TemplateSignerReq;
 import com.fadada.api.bean.rsp.BaseRsp;
+import com.fadada.api.bean.rsp.document.DownLoadFileRsp;
 import com.fadada.api.bean.rsp.document.UploadFileRsp;
 import com.fadada.api.bean.rsp.sign.*;
 import com.fadada.api.bean.rsp.sign.batch.BatchCreateByDraftIdRsp;
@@ -85,6 +86,9 @@ public class SignDemo extends BaseDemo {
 
             // 解锁签署任务
             signDemo.unlock();
+
+            // 下载签署任务
+            signDemo.downloadSignTask();
 
             // 获取快捷签署链接
             signDemo.getQuickSignUrl();
@@ -561,6 +565,25 @@ public class SignDemo extends BaseDemo {
         signRegionReq.setType(type);
         signRegionsReq.add(signRegionReq);
         return signRegionsReq;
+    }
+
+
+    /**
+     * 下载签署任务
+     *
+     * @throws ApiException
+     */
+    private void downloadSignTask() throws ApiException {
+        DownloadSignTaskReq req = new DownloadSignTaskReq();
+        req.setToken(token);
+        req.setTaskId(taskId);
+        req.setDownloadWay(1);
+        BaseRsp<DownLoadFileRsp> rsp = signTaskClient.downloadSignTask(req);
+        if (rsp.isSuccess()) {
+            CommonUtil.fileSink(rsp.getData().getFileBytes(), "d:\\", "签署任务.zip");
+        } else {
+            log.error("下载签署任务失败：{}", rsp);
+        }
     }
 
 

@@ -149,6 +149,7 @@ public class TemplateDemo extends BaseDemo {
         req.setToken(token);
         DownloadCompanyTemplateFileReq.TemplateInfo templateInfo = new DownloadCompanyTemplateFileReq.TemplateInfo();
         templateInfo.setTemplateId(templateId);
+        templateInfo.setDownloadWay(1);
         req.setTemplateInfo(templateInfo);
         BaseRsp<DownLoadFileRsp> rsp = templateClient.downloadCompanyTemplateFile(req);
         if (rsp.isSuccess()) {
@@ -218,6 +219,7 @@ public class TemplateDemo extends BaseDemo {
         TemplateInitReq.TemplateInfo templateInfo = new TemplateInitReq.TemplateInfo();
         templateInfo.setTemplateName("测试模板");
         templateInfo.setTemplateRemark("这是模板哦");
+        templateInfo.setFileSource(0);
         req.setTemplateInfo(templateInfo);
         BaseRsp<TemplateInitRsp> rsp = templateClient.templateInit(req);
         CommonUtil.checkResult(rsp);
@@ -232,6 +234,7 @@ public class TemplateDemo extends BaseDemo {
         req.setToken(token);
         GetTemplateMainUrlReq.TemplateInfo templateInfo = new GetTemplateMainUrlReq.TemplateInfo();
         templateInfo.setTemplateId(templateId);
+        templateInfo.setRedirectUrl("http://www.fadada.com");
         req.setTemplateInfo(templateInfo);
         BaseRsp<GetTemplateMainUrlRsp> rsp = templateClient.getTemplateMainUrl(req);
         CommonUtil.checkResult(rsp);
