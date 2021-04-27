@@ -2,6 +2,7 @@ package com.fadada.api;
 
 import com.fadada.api.bean.req.sign.*;
 import com.fadada.api.bean.req.sign.batch.*;
+import com.fadada.api.bean.req.sign.batch.GetBatchSignUrlReq.SigntaskInfo;
 import com.fadada.api.bean.req.sign.draft.CreateTaskByDraftIdReq;
 import com.fadada.api.bean.req.sign.file.*;
 import com.fadada.api.bean.req.sign.template.CreateByDraftIdReq;
@@ -14,6 +15,7 @@ import com.fadada.api.bean.rsp.sign.*;
 import com.fadada.api.bean.rsp.sign.batch.BatchCreateByDraftIdRsp;
 import com.fadada.api.bean.rsp.sign.batch.BatchGetSignUrlRsp;
 import com.fadada.api.bean.rsp.sign.batch.BatchGetSigntasksByBatchNoRsp;
+import com.fadada.api.bean.rsp.sign.batch.GetBatchSignUrlRsp;
 import com.fadada.api.client.SignTaskClient;
 import com.fadada.api.exception.ApiException;
 import com.fadada.api.utils.string.StringUtil;
@@ -92,6 +94,9 @@ public class SignDemo extends BaseDemo {
 
             // 获取快捷签署链接
             signDemo.getQuickSignUrl();
+
+            // 获取批量签链接
+            signDemo.getBatchSignUrl();
 
             // ------- 批量任务------
             // 创建批次号批量任务
@@ -509,6 +514,24 @@ public class SignDemo extends BaseDemo {
         req.setMobile("手机号码");
         req.setTaskId(taskId);
         BaseRsp<GetQuickSignUrlRsp> rsp = signTaskClient.getQuickSignUrl(req);
+        CommonUtil.checkResult(rsp);
+    }
+
+    /**
+     * 获取批量签署链接
+     *
+     * @throws ApiException
+     */
+    public void getBatchSignUrl() throws ApiException {
+        GetBatchSignUrlReq req = new GetBatchSignUrlReq();
+        req.setToken(token);
+        List<SigntaskInfo> lists = new ArrayList<>();
+        SigntaskInfo signtaskInfo = new SigntaskInfo();
+        signtaskInfo.setTaskId("签署任务编号");
+        lists.add(signtaskInfo);
+        req.setSigntasks(lists);
+        req.setSignerId("签署人unionId");
+        BaseRsp<GetBatchSignUrlRsp> rsp = signTaskClient.getBatchSignUrl(req);
         CommonUtil.checkResult(rsp);
     }
 
